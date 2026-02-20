@@ -33,8 +33,7 @@ ass-tools/
 
 **用法**
 ```bash
-# 依赖：pip install fonttools 以及系统安装有 FontForge
-python scripts/python/ass-drawing-subsetter.py input.ass
+python ass-drawing-subsetter.py input.ass
 ```
 *注：优化后的文件将保存为 `<文件名>_optimized.ass`。*
 
@@ -49,7 +48,7 @@ ASS 内嵌字体提取与诊断工具。使用 SSA UUDecode 算法从字幕文�
 
 **用法**
 ```bash
-python scripts/python/ass-font-extractor.py optimized_subtitle.ass
+python ass-font-extractor.py optimized_subtitle.ass
 ```
 
 ## 环境依赖
