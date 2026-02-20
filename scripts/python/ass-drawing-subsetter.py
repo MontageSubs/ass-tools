@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ============================================================================
 # Name: ass-drawing-subsetter.py
-# Version: 1.0
+# Version: 1.0.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -12,24 +12,25 @@
 #    This script optimizes Advanced Substation Alpha (.ass) subtitle files 
 #    by extracting vector drawing commands (\p1, etc.) and converting them 
 #    into a subsetted, embedded TrueType font (TTF) to significantly reduce 
-#    file size and improve drawing command reuse.
+#    file size and improve drawing command reuse, improving compatibility
+#    on lower-performance playback devices (e.g., Android TV).
 #    本脚本用于优化 ASS 字幕文件，通过提取绘图指令（\p1 等）并将其转换为
 #    子集化的嵌入式 TrueType 字体 (TTF)，从而大幅减少文件体积并提高
-#    绘图指令的复用率。
+#    绘图指令的复用率，提升在性能较弱播放设备（如 Android TV）上的兼容性。
 #
 # Features:
 #    - Extracts unique drawing shapes to prevent redundant data.
 #    - Automatically generates a minimal TTF font using FontForge.
 #    - Subsets the font using FontTools to ensure the smallest file size.
 #    - Encodes the font using the SSA-standard UUEncode algorithm.
-#    - Replaces heavy drawing tags with lightweight font character calls.
+#    - Replace drawing tags with lightweight font characters.
 #
 # 功能:
 #    - 提取唯一的绘图形状，防止数据冗余。
 #    - 使用 FontForge 自动生成极简 TTF 字体。
 #    - 使用 FontTools 对字体进行子集化压缩，确保最小文件体积。
 #    - 使用 SSA 标准的 UUEncode 算法对字体进行编码。
-#    - 将臃肿的绘图标签替换为轻量化的字体字符调用。
+#    - 用轻量字体字符替换绘图标签。
 #
 # Dependencies / 依赖:
 #    - FontForge (Python extension)
