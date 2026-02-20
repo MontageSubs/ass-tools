@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ============================================================================
 # Name: ass-font-extractor.py
-# Version: 1.0.0
+# Version: 1.0.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -18,8 +18,8 @@
 #    python ass-font-extractor.py optimized_subtitle.ass
 #
 # Output / 输出:
-#    The extracted font will be saved as: extracted_debug.ttf
-#    提取出的字体将保存为：extracted_debug.ttf
+#    The extracted font will be saved using the ASS file's FontName as the filename, in the working directory.
+#    提取出的字体将保存为 ASS 文件中 FontName 指定的文件名，并保存在运行目录下。
 #
 # ============================================================================
 import sys
