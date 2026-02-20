@@ -33,8 +33,7 @@ Extracts vector drawing commands (`\p1`, etc.) from an ASS file and converts the
 
 **Usage**
 ```bash
-# Requirements: pip install fonttools & FontForge (with Python support)
-python scripts/python/ass-drawing-subsetter.py input.ass
+$ python ass-drawing-subsetter.py input.ass
 ```
 *Note: The optimized file will be saved as `<filename>_optimized.ass`.*
 
@@ -49,7 +48,7 @@ A diagnostic tool designed to extract and decode embedded TrueType fonts (TTF) f
 
 **Usage**
 ```bash
-python scripts/python/ass-font-extractor.py optimized_subtitle.ass
+$ python ass-font-extractor.py optimized_subtitle.ass
 ```
 
 ## Dependencies
