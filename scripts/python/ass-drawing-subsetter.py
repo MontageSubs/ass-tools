@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ============================================================================
 # Name: ass-drawing-subsetter.py
-# Version: 1.0.1
+# Version: 1.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -135,28 +135,60 @@ class ASSDrawingSubsetter:
         print(f"Extracted {len(self.drawings)} unique shapes. | 提取到 {len(self.drawings)} 个唯一形状。")
 
     def create_subset_ttf(self):
+        # Font metrics: em square = 1024 units, full square from y=0 to y=1024
+        EM     = 1024    # units per em
+        TARGET = 820     # max glyph extent (leaves ~10% margin on each side)
+        MARGIN = (EM - TARGET) / 2  # ~102 units of padding per side
+
         font = fontforge.font()
-        font.fontname = FONT_NAME
+        font.fontname   = FONT_NAME
         font.familyname = FONT_NAME
-        font.fullname = FONT_NAME
-        
+        font.fullname   = FONT_NAME
+        font.em         = EM
+        # Put the entire em square above the baseline so y ∈ [0, EM]
+        font.ascent  = EM
+        font.descent = 0
+
         with tempfile.TemporaryDirectory() as tmp_dir:
             for path_data, char_val in self.drawing_to_char.items():
-                cp = ord(char_val)
+                cp   = ord(char_val)
                 char = font.createChar(cp)
+
                 svg_path = path_data.replace('b', 'C').replace('m', 'M').replace('l', 'L')
                 svg_file = os.path.join(tmp_dir, f"{cp}.svg")
                 with open(svg_file, 'w') as f:
-                    f.write(f'<svg xmlns="http://www.w3.org/2000/svg"><path d="{svg_path}"/></svg>')
-                
+                    f.write(
+                        f'<svg xmlns="http://www.w3.org/2000/svg">'
+                        f'<path d="{svg_path}"/></svg>'
+                    )
+
                 char.importOutlines(svg_file)
-                bbox = char.boundingBox()
+
+                bbox    = char.boundingBox()   # (xmin, ymin, xmax, ymax)
+                glyph_w = bbox[2] - bbox[0]
+                glyph_h = bbox[3] - bbox[1]
+
+                if glyph_w <= 0 or glyph_h <= 0:
+                    char.width = EM
+                    continue
+
+                # ── Step 1: move bounding-box origin to (0, 0) ──────────────
                 char.transform([1, 0, 0, 1, -bbox[0], -bbox[1]])
-                height = bbox[3] - bbox[1]
-                if height > 0:
-                    scale = 800.0 / height
-                    char.transform([scale, 0, 0, scale, 0, 0])
-                char.width = 1024
+
+                # ── Step 2: uniform scale so the LARGER side == TARGET ──────
+                #    This preserves aspect ratio and guarantees neither
+                #    dimension overflows the em square.
+                scale = TARGET / max(glyph_w, glyph_h)
+                char.transform([scale, 0, 0, scale, 0, 0])
+
+                # ── Step 3: center inside the em square ──────────────────────
+                scaled_w = glyph_w * scale
+                scaled_h = glyph_h * scale
+                offset_x = MARGIN + (TARGET - scaled_w) / 2   # horizontal center
+                offset_y = MARGIN + (TARGET - scaled_h) / 2   # vertical center
+                char.transform([1, 0, 0, 1, offset_x, offset_y])
+
+                char.width = EM
             
             font.selection.all()
             font.correctDirection()
